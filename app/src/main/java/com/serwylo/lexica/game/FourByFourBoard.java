@@ -21,7 +21,7 @@ public class FourByFourBoard extends Board {
 	private static final int SIZE = 16;
 	private static final int WIDTH = 4;
 
-	public FourByFourBoard(String[] b) {
+	public FourByFourBoard(Character[] b) {
 		super(b);
 	}
 

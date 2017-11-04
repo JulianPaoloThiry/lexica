@@ -157,15 +157,15 @@ public class LexicaView extends View implements Synchronizer.Event, Game.RotateH
 
 		for (int x = 0; x < boardWidth; x++) {
 			for (int y = 0; y < boardWidth; y++) {
-				String txt = game.getBoard().elementAt(x, y).toUpperCase();
+				Character chr = game.getBoard().elementAt(x, y);
 				p.setTextSize(textSize);
 				p.setTextAlign(Paint.Align.CENTER);
-				canvas.drawText(txt,
+				canvas.drawText(Character.toString(chr),
 						paddingSize + (x * boxsize) + (boxsize / 2),
 						topOfGrid + (y * boxsize) + (boxsize / 2) - offset,
 						p);
 				if (Game.SCORE_LETTERS.equals(game.getScoreType())) {
-					String score = String.valueOf(Game.letterPoints(txt));
+					String score = String.valueOf(game.getLetterPoints().get(chr));
 					p.setTextSize(textSize / 4);
 					p.setTextAlign(Paint.Align.RIGHT);
 					canvas.drawText(score,
@@ -403,9 +403,10 @@ public class LexicaView extends View implements Synchronizer.Event, Game.RotateH
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		//TODO: Investigate if any changes are needed for non-US keyboards
 		if (keyCode >= KeyEvent.KEYCODE_A && keyCode <= KeyEvent.KEYCODE_Z) {
-			String letter = Character.toString((char) event.getUnicodeChar()).toLowerCase();
-			mKeyboardTracker.processLetter(letter.equals("q") ? "qu" : letter);
+			String letter = Character.toString((char) event.getUnicodeChar()).toUpperCase();
+			mKeyboardTracker.processLetter(letter);
 		} else if (keyCode == KeyEvent.KEYCODE_SPACE ||
 				keyCode == KeyEvent.KEYCODE_ENTER) {
 			mKeyboardTracker.reset();
@@ -589,8 +590,8 @@ public class LexicaView extends View implements Synchronizer.Event, Game.RotateH
 			defaultAcceptableLetters.clear();
 
 			for (int i = 0; i < game.getBoard().getSize(); i++) {
-				defaultStates.add(new State(game.getBoard().valueAt(i), i));
-				defaultAcceptableLetters.add(game.getBoard().valueAt(i));
+				defaultStates.add(new State(Character.toString(game.getBoard().valueAt(i)), i));
+				defaultAcceptableLetters.add(Character.toString(game.getBoard().valueAt(i)));
 			}
 
 			reset();
@@ -633,7 +634,7 @@ public class LexicaView extends View implements Synchronizer.Event, Game.RotateH
 					}
 
 					tracked += game.getBoard().elementAt(nState.pos);
-					currentWord = tracked.toUpperCase();
+					currentWord = tracked;
 
 					appendedString = true;
 				}
@@ -686,7 +687,7 @@ public class LexicaView extends View implements Synchronizer.Event, Game.RotateH
 					Set<Integer> newStatePositions = new HashSet<>(selected);
 					newStatePositions.add(i);
 
-					String letter = game.getBoard().valueAt(i);
+					String letter = Character.toString(game.getBoard().valueAt(i));
 					possibleStates.add(new State(letter, i, newStatePositions));
 					canTransitionToNext.add(letter);
 				}

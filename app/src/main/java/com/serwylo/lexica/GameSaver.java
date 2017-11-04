@@ -14,11 +14,13 @@ public abstract class GameSaver {
 	protected static final int DEFAULT_MAX_TIME_REMAINING = 18000;
 	protected static final int DEFAULT_TIME_REMAINING = 0;
 	protected static final int DEFAULT_WORD_COUNT = 0;
+	protected static final String DEFAULT_DICTIONARY = "en_us";
 
 	protected static final String ACTIVE_GAME = "activeGame";
 	protected static final String SCORE_TYPE = "scoreType";
 	protected static final String WORD_COUNT = "wordCount";
 	protected static final String WORDS = "words";
+	protected static final String DICTIONARY = "dict";
 	protected static final String MAX_TIME_REMAINING = "maxTimeRemaining";
 	protected static final String TIME_REMAINING = "timeRemaining";
 	protected static final String GAME_BOARD = "gameBoard";
@@ -28,11 +30,12 @@ public abstract class GameSaver {
 
 	public abstract boolean hasSavedGame();
 	public abstract String readScoreType();
+	public abstract String readDictionary();
 	public abstract int readWordCount();
 	public abstract String[] readWords();
 	public abstract int readMaxTimeRemaining();
 	public abstract int readTimeRemaining();
-	public abstract String[] readGameBoard();
+	public abstract Character[] readGameBoard();
 	public abstract int readBoardSize();
 	public abstract Game.GameStatus readStatus();
 	public abstract Date readStart();
@@ -41,5 +44,14 @@ public abstract class GameSaver {
 		return TextUtils.isEmpty(string) ? new String[] {} : string.split(",");
 	}
 
-	public abstract void save(Board board, int timeRemaining, int maxTimeRemaining, String wordListToString, String scoreType, int wordCount, Date start, Game.GameStatus status);
+	protected static Character[] stringToChars(String string) {
+		if (string == null) return null;
+		Character[] chars = new Character[string.length()];
+		for (int i = 0; i < chars.length; i++) {
+			chars[i] = string.charAt(i);
+		}
+		return chars;
+	}
+
+	public abstract void save(Board board, int timeRemaining, int maxTimeRemaining, String dictionary, String wordListToString, String scoreType, int wordCount, Date start, Game.GameStatus status);
 }

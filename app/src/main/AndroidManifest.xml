@@ -4,8 +4,9 @@
           android:versionCode="1000"
           android:versionName="0.10.0">
 
+	<!--As of August 2017, API level 19 is the lowest Google-supported version. 91% of Android devices use API 19 or higher.-->
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="19"
         android:targetSdkVersion="23"
         />
 
@@ -43,4 +44,4 @@
 			</intent-filter>
         </activity>
     </application>
-</manifest> 
+</manifest>

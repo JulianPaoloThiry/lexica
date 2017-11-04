@@ -9,8 +9,6 @@
 	<string name="pref_dict">字典</string>
 	<string name="pref_dict_summary">选择使用的字典</string>
 	<string name="pref_dict_dialog">选择字典</string>
-	<string name="pref_dict_us">美国</string>
-	<string name="pref_dict_uk">英国</string>
 
 	<string name="pref_boardSize">版面</string>
 	<string name="pref_boardSize_summary">选择版面大小</string>

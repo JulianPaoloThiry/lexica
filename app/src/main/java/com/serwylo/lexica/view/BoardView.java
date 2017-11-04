@@ -28,6 +28,8 @@ import com.serwylo.lexica.R;
 import com.serwylo.lexica.game.Board;
 import com.serwylo.lexica.game.Game;
 
+import java.util.Map;
+
 
 public class BoardView extends View {
 
@@ -39,6 +41,7 @@ public class BoardView extends View {
 	private final Paint p;
 	public final int paddingSize;
 	private String scoreType;
+	private Map<Character, Integer> letterPoints;
 
 	public BoardView(Context context, AttributeSet attrs) {
 		super(context,attrs);
@@ -56,6 +59,10 @@ public class BoardView extends View {
 
 	public void setScoreType(String scoreType) {
 		this.scoreType = scoreType;
+	}
+
+	public void setLetterPoints(Map<Character, Integer> letterPoints) {
+		this.letterPoints = letterPoints;
 	}
 
 	private boolean isCellHighlighted(int x, int y) {
@@ -128,15 +135,15 @@ public class BoardView extends View {
 		// Draw letters
 		for (int x = 0; x < board.getWidth(); x++) {
 			for (int y = 0; y < board.getWidth(); y++) {
-				String txt = board.elementAt(x, y).toUpperCase();
+				Character chr = board.elementAt(x, y);
 				p.setTextSize(textSize);
 				p.setTextAlign(Paint.Align.CENTER);
-				canvas.drawText(txt,
+				canvas.drawText(Character.toString(chr),
 						(paddingSize / 2) + (x * boxsize) + (boxsize / 2),
 						paddingSize + (y * boxsize) + (boxsize / 2) - offset,
 						p);
 				if (Game.SCORE_LETTERS.equals(scoreType)) {
-					String score = String.valueOf(Game.letterPoints(txt));
+					String score = String.valueOf(letterPoints.get(chr));
 					p.setTextSize(textSize / 4);
 					p.setTextAlign(Paint.Align.RIGHT);
 					canvas.drawText(score,

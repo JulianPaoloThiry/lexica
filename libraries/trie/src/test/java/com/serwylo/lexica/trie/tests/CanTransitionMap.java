@@ -14,15 +14,15 @@ import net.healeys.trie.TransitionMap;
  */
 public class CanTransitionMap implements TransitionMap {
 
-    private String[] letters;
+    private Character[] letters;
 
-    CanTransitionMap(String[] letters) {
+    CanTransitionMap(Character[] letters) {
         this.letters = letters;
     }
 
     CanTransitionMap() {
-        this.letters = new String[]{
-                "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "qu", "r", "s", "t", "u", "v", "w", "x", "y", "z",
+        this.letters = new Character[]{
+                'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'Ñ'
         };
     }
 
@@ -37,7 +37,7 @@ public class CanTransitionMap implements TransitionMap {
     }
 
     @Override
-    public String valueAt(int position) {
+    public Character valueAt(int position) {
         if (position >= letters.length) {
             position = letters.length - 1;
         }

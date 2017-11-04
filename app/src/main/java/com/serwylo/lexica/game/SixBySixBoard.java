@@ -22,7 +22,7 @@ public class SixBySixBoard extends Board {
 	private static final int SIZE = 36;
 	private static final int WIDTH = 6;
 
-	public SixBySixBoard(String[] b) {
+	public SixBySixBoard(Character[] b) {
 		super(b);
 	}
 

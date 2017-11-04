@@ -7,6 +7,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,30 +35,27 @@ public class StringTrie implements Trie {
 	 */
 	private static class CheapTransitionMap {
 
-		private Map<String, Set<String>> transitions = new HashMap<>();
+		private Map<Character, Set<Character>> transitions = new HashMap<>();
 
 		CheapTransitionMap(TransitionMap transitionMap) {
 			for (int fromPos = 0; fromPos < transitionMap.getSize(); fromPos ++) {
 
-				String from = transitionMap.valueAt(fromPos);
-
 				int fromX = fromPos % transitionMap.getWidth();
 				int fromY = fromPos / transitionMap.getWidth();
 
-				Set <String> transitionTo = new HashSet<>();
+				Set <Character> transitionTo = new HashSet<>();
 				for (int j = 0; j < transitionMap.getSize(); j ++) {
-					String to = transitionMap.valueAt(j);
-					if (transitionMap.valueAt(j).equals(to)) {
-						int toX = j % transitionMap.getWidth();
-						int toY = j / transitionMap.getWidth();
-						if (transitionMap.canTransition(fromX, fromY, toX, toY)) {
-							transitionTo.add(transitionMap.valueAt(j));
-						}
+					int toX = j % transitionMap.getWidth();
+					int toY = j / transitionMap.getWidth();
+					if (transitionMap.canTransition(fromX, fromY, toX, toY)) {
+						transitionTo.add(transitionMap.valueAt(j));
 					}
 				}
 
+				Character from = transitionMap.valueAt(fromPos);
+
 				if (!transitions.containsKey(from)) {
-					transitions.put(from, new HashSet<String>());
+					transitions.put(from, new HashSet<Character>());
 				}
 
 				transitions.get(from).addAll(transitionTo);
@@ -65,62 +63,37 @@ public class StringTrie implements Trie {
 			}
 		}
 
-		boolean contains(String from) {
+		boolean contains(Character from) {
 			return transitions.containsKey(from);
 		}
 
-		boolean canTransition(String from, String to) {
-			Set<String> transitionTo = transitions.get(from);
+		boolean canTransition(Character from, Character to) {
+			Set<Character> transitionTo = transitions.get(from);
 			return transitionTo != null && transitionTo.contains(to);
 		}
 	}
 
-	private StringTrie(InputStream in, TransitionMap transitionMap, boolean usDict, boolean ukDict) throws IOException {
-		Set<String> availableStrings = new HashSet<>(transitionMap.getSize());
+	private StringTrie(InputStream in, TransitionMap transitionMap) throws IOException {
+		Set<Character> availableStrings = new HashSet<>(transitionMap.getSize());
 		for (int i = 0; i < transitionMap.getSize(); i ++) {
 			availableStrings.add(transitionMap.valueAt(i));
 		}
-		rootNode = new Node(new DataInputStream(new BufferedInputStream(in)), usDict, ukDict, new CheapTransitionMap(transitionMap), availableStrings, false, null, 0);
+		rootNode = new Node(new DataInputStream(new BufferedInputStream(in)), new CheapTransitionMap(transitionMap), availableStrings, false, null, 0);
 	}
 
 	@Override
-	public void addWord(String w, boolean usWord, boolean ukWord) {
-		rootNode.addSuffix(w, 0, usWord, ukWord);
-	}
-
-	@Override
-	public boolean isWord(String w, boolean usWord, boolean ukWord) {
-		return rootNode.isWord(w, 0, usWord, ukWord);
+	public void addWord(String w) {
+		rootNode.addSuffix(w, 0);
 	}
 
 	@Override
 	public boolean isWord(String word) {
-		return rootNode.isAnyWord(word, 0);
+		return rootNode.isWord(word, 0);
 	}
 
 	@Override
 	public void write(OutputStream out) throws IOException {
 		rootNode.writeNode(out);
-	}
-
-	public static class StringSolution implements net.healeys.trie.Solution {
-
-		private final String word;
-		private final Integer[] positions;
-
-		public StringSolution(String word, Integer[] positions) {
-			this.word = word;
-			this.positions = positions;
-		}
-
-		@Override
-		public String getWord() {
-			return word;
-		}
-
-		public Integer[] getPositions() {
-			return positions;
-		}
 	}
 
 	private void recursiveSolver(
@@ -133,12 +106,12 @@ public class StringTrie implements Trie {
 			Map<String, Solution> solutions,
 			List<Integer> solution) {
 
-		if (node.usWord() || node.ukWord()) {
+		if (node.isWord()) {
 			String w = new String(prefix);
 			if(wordFilter == null || wordFilter.isWord(w)) {
 				Integer[] solutionArray = new Integer[solution.size()];
 				solution.toArray(solutionArray);
-				solutions.put(w, new StringSolution(w, solutionArray));
+				solutions.put(w, new Solution.Default(w, solutionArray));
 			}
 		}
 
@@ -164,7 +137,7 @@ public class StringTrie implements Trie {
 					continue;
 				}
 
-				String valueAt = transitions.valueAt(toPosition);
+				Character valueAt = transitions.valueAt(toPosition);
 				StringTrie.Node nextNode = node.maybeChildAt(valueAt);
 				if (nextNode == null) {
 					continue;
@@ -176,7 +149,7 @@ public class StringTrie implements Trie {
 				recursiveSolver(transitions, wordFilter, nextNode, toPosition, usedPositions, prefix, solutions, solution);
 				solution.remove(solution.size() - 1);
 
-				prefix.delete(prefix.length() - valueAt.length(), prefix.length());
+				prefix.delete(prefix.length() - 1, prefix.length());
 			}
 		}
 
@@ -186,13 +159,13 @@ public class StringTrie implements Trie {
 	@Override
 	public Map<String, Solution> solver(TransitionMap transitions, WordFilter filter) {
 
-		long startTime = System.currentTimeMillis();
+		//long startTime = System.currentTimeMillis();
 		Map<String, Solution> solutions = new TreeMap<>();
 		StringBuilder prefix = new StringBuilder(transitions.getSize() + 1);
 
 		List<Integer> positions = new ArrayList<>(transitions.getSize());
 		for(int i=0; i < transitions.getSize(); i ++) {
-			String value = transitions.valueAt(i);
+			Character value = transitions.valueAt(i);
 			StringTrie.Node nextNode = rootNode.maybeChildAt(value);
 			if (nextNode == null) {
 				continue;
@@ -204,26 +177,25 @@ public class StringTrie implements Trie {
 			recursiveSolver(transitions, filter, nextNode, i, new HashSet<Integer>(), prefix, solutions, positions);
 
 			positions.remove(positions.size() - 1);
-			prefix.delete(prefix.length() - value.length(), prefix.length());
+			prefix.delete(prefix.length() - 1, prefix.length());
 		}
 
-		long totalTime = System.currentTimeMillis() - startTime;
+		//long totalTime = System.currentTimeMillis() - startTime;
 
 		return solutions;
 	}
 
 	private static class Node implements TrieNode {
 
-		private final Map<String, Node> children = new HashMap<>();
+		private final Map<Character, Node> children = new HashMap<>();
 
-		private boolean isUsWord;
-		private boolean isUkWord;
+		private boolean isWord;
 
 		private Node() {
 
 		}
 
-		private Node(DataInputStream input, boolean usDict, boolean ukDict, CheapTransitionMap transitionMap, Set<String> availableStrings, boolean shouldSkip, String lastChar, int depth) throws IOException {
+		private Node(DataInputStream input, CheapTransitionMap transitionMap, Set<Character> availableStrings, boolean shouldSkip, Character lastChar, int depth) throws IOException {
 
 			int nodeSizeInBytes = input.readInt();
 
@@ -232,36 +204,32 @@ public class StringTrie implements Trie {
 				return;
 			}
 
-			isUkWord = input.readBoolean();
-			isUsWord = input.readBoolean();
+			int numBytes = input.readByte();
 
-			int numChildren = input.readShort();
+			if (numBytes < 0) {
+				isWord = true;
+				numBytes = -1 - numBytes;
+			}
 
-			if (numChildren > 0) {
-				String[] childStrings = new String[numChildren];
-				for (int i = 0; i < numChildren; i++) {
-					int length = input.readByte();
-
-					byte[] bytes = new byte[length];
-					input.readFully(bytes);
-
-					String string = new String(bytes);
-					if (depth == 0 && transitionMap.contains(string) || depth > 0 && transitionMap.canTransition(lastChar, string)) {
-						childStrings[i] = string;
+			if (numBytes > 0) {
+				byte[] bytes = new byte[numBytes];
+				input.read(bytes);
+				String childKeysAsString = new String(bytes, StandardCharsets.UTF_8);
+				Character[] childStrings = new Character[childKeysAsString.length()];
+				for (int i = 0; i < childKeysAsString.length(); i++) {
+					Character chr = childKeysAsString.charAt(i);
+					if (depth == 0 && transitionMap.contains(chr) || depth > 0 && transitionMap.canTransition(lastChar, chr)) {
+						childStrings[i] = chr;
 					}
 				}
 
-				for (int i = 0; i < numChildren; i++) {
+				for (int i = 0; i < childStrings.length; i++) {
 					// Need to read the node regardless of whether we end up keeping it. This is to
 					// ensure that we traverse the InputStream in the right order.
 					boolean shouldSkipChild = childStrings[i] == null;
-					Node childNode = new Node(input, usDict, ukDict, transitionMap, availableStrings, shouldSkipChild, childStrings[i], depth + 1);
+					Node childNode = new Node(input, transitionMap, availableStrings, shouldSkipChild, childStrings[i], depth + 1);
 					if (!shouldSkipChild) {
-						if (childNode.isUsWord && !childNode.isUkWord && !usDict || childNode.isUkWord && !childNode.isUsWord && !ukDict) {
-							// Skip it.
-						} else {
-							children.put(childStrings[i], childNode);
-						}
+						children.put(childStrings[i], childNode);
 					}
 				}
 			}
@@ -269,23 +237,27 @@ public class StringTrie implements Trie {
 
 		@Override
 		public void writeNode(OutputStream output) throws IOException {
+			StringBuilder childKeys = new StringBuilder();
+			for (Character c : children.keySet())
+				childKeys.append(c);
+			byte[] bytes = childKeys.toString().getBytes(StandardCharsets.UTF_8);
+
+			int b = bytes.length;
+			if (b > Byte.MAX_VALUE)
+				throw new IOException("Too many distinct characters in dictionary: bytes.length "
+						+ b + " > " + Byte.MAX_VALUE);
+
+			if (isWord)
+				b = (byte)(-1 - b);
 
 			ByteArrayOutputStream tempOutput = new ByteArrayOutputStream();
 			DataOutputStream tempOutputData = new DataOutputStream(tempOutput);
 
-			tempOutputData.writeBoolean(isUkWord);
-			tempOutputData.writeBoolean(isUsWord);
+			tempOutputData.writeByte(b);
+			tempOutputData.write(bytes, 0, bytes.length);
 
-			tempOutputData.writeShort(children.size());
-			Set<Map.Entry<String, Node>> entries = children.entrySet();
-			for (Map.Entry<String, Node> entry : entries) {
-				String character = entry.getKey();
-				tempOutputData.writeByte(character.length());
-				tempOutputData.writeBytes(character);
-			}
-
-			for (Map.Entry<String, Node> entry : entries) {
-				entry.getValue().writeNode(tempOutputData);
+			for (Node child : children.values()) {
+				child.writeNode(tempOutputData);
 			}
 
 			DataOutputStream outputData = new DataOutputStream(output);
@@ -294,41 +266,27 @@ public class StringTrie implements Trie {
 		}
 
 		@Override
-		public TrieNode addSuffix(String word, int currentPosition, boolean usWord, boolean ukWord) {
+		public TrieNode addSuffix(String word, int currentPosition) {
 			Node child = ensureChildAt(word, currentPosition);
 
 			if (currentPosition == word.length() - 1) {
-				child.isUsWord |= usWord;
-				child.isUkWord |= ukWord;
+				child.isWord = true;
 				return child;
 			} else {
-				return child.addSuffix(word, nextPosition(word, currentPosition), usWord, ukWord);
+				return child.addSuffix(word, currentPosition + 1);
 			}
-		}
-
-		private int nextPosition(String word, int currentPosition) {
-			return currentPosition + getCharAt(word, currentPosition).length();
-		}
-
-		// TODO: Refactor special handling of "Q" into interface for other Locales to use.
-		private String getCharAt(String word, int position) {
-			String character = Character.toString(word.charAt(position));
-			if (character.equals("q") && word.length() > position && Character.toString(word.charAt(position + 1)).equals("u")) {
-				return "qu";
-			}
-			return character;
 		}
 
 		private Node maybeChildAt(String word, int position) {
-			return children.get(getCharAt(word, position));
+			return children.get(word.charAt(position));
 		}
 
-		private Node maybeChildAt(String childChar) {
+		private Node maybeChildAt(Character childChar) {
 			return children.get(childChar);
 		}
 
 		private Node ensureChildAt(String word, int position) {
-			String character = getCharAt(word, position);
+			char character = word.charAt(position);
 			Node existingNode = maybeChildAt(word, position);
 			if (existingNode == null) {
 				Node node = new Node();
@@ -340,13 +298,8 @@ public class StringTrie implements Trie {
 		}
 
 		@Override
-		public boolean usWord() {
-			return isUsWord;
-		}
-
-		@Override
-		public boolean ukWord() {
-			return isUkWord;
+		public boolean isWord() {
+			return isWord;
 		}
 
 		@Override
@@ -355,29 +308,21 @@ public class StringTrie implements Trie {
 		}
 
 		@Override
-		public boolean isWord(String word, int currentPosition, boolean usWord, boolean ukWord) {
+		public boolean isWord(String word, int currentPosition) {
 			if (currentPosition == word.length()) {
-				return usWord && isUsWord || ukWord && isUkWord;
+				return isWord;
 			}
 
 			Node childNode = maybeChildAt(word, currentPosition);
-			return childNode != null && childNode.isWord(word, nextPosition(word, currentPosition), usWord, ukWord);
+			return childNode != null && childNode.isWord(word, currentPosition + 1);
 		}
 
-		private boolean isAnyWord(String word, int currentPosition) {
-			if (currentPosition == word.length()) {
-				return isUsWord || isUkWord;
-			}
-
-			Node childNode = maybeChildAt(word, currentPosition);
-			return childNode != null && childNode.isAnyWord(word, nextPosition(word, currentPosition));
-		}
 	}
 
 	public static class Deserializer implements net.healeys.trie.Deserializer<StringTrie> {
 		@Override
-		public StringTrie deserialize(InputStream stream, TransitionMap transitionMap, boolean usDict, boolean ukDict) throws IOException {
-			return new StringTrie(stream, transitionMap, usDict, ukDict);
+		public StringTrie deserialize(InputStream stream, TransitionMap transitionMap) throws IOException {
+			return new StringTrie(stream, transitionMap);
 		}
 	}
 

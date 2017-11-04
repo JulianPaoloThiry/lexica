@@ -39,8 +39,8 @@ public class LexicaLogo extends View {
 	private enum BoxColor { WHITE, YELLOW}
 
 	private static final String LETTERS[] = {
-		"A","B","C","D","E","F","G","H","I","J","K","L","M","N",
-		"O","P","Qu","R","S","T","U","V","W","X","Y","Z"
+		"A","B","C","D","E","F","G","H","I","J","K","L","M",
+		"N","O","P","Q","R","S","T","U","V","W","X","Y","Z"
 	};
 
 	private Picture cached;
@@ -56,11 +56,8 @@ public class LexicaLogo extends View {
 	 * It seems that as of some time in the past, the default is to use hardware acceleration
 	 * for canvases. This sets the view to use a software canvas.
 	 */
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupSoftwareCanvas() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			setLayerType(LAYER_TYPE_SOFTWARE, null);
-		}
+		setLayerType(LAYER_TYPE_SOFTWARE, null);
 	}
 
 	private void drawTile(Canvas canvas, Paint p, String letter, BoxColor color,

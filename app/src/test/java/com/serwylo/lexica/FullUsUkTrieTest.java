@@ -28,64 +28,64 @@ import static org.junit.Assert.fail;
 
 public class FullUsUkTrieTest extends TrieTest {
 
-	private static final Board BOARD = new FourByFourBoard(new String[] {
-			"r", "qu", "o", "s",
-			"w", "n", "o", "a",
-			"t", "v", "d", "g",
-			"n", "p", "u", "i",
+	private static final Board BOARD = new FourByFourBoard(new Character[] {
+			'R', 'Q', 'O', 'S',
+			'W', 'N', 'O', 'A',
+			'T', 'V', 'D', 'G',
+			'N', 'P', 'U', 'I',
 	});
 
 	private static final LinkedHashMap<String, Solution> SOLUTIONS = new LinkedHashMap<>();
 
 	static {
-		addSolution("quod", xy(1, 0), xy(2, 1), xy(2, 2));
-		addSolution("ono", xy(2, 1), xy(1, 1), xy(2, 0));
-		addSolution("son", xy(3, 0), xy(2, 1), xy(1, 1));
-		addSolution("soon", xy(3, 0), xy(2, 1), xy(2, 0), xy(1, 1));
-		addSolution("sod", xy(3, 0), xy(2, 1), xy(2, 2));
-		addSolution("soda", xy(3, 0), xy(2, 1), xy(2, 2), xy(3, 1));
-		addSolution("sad", xy(3, 0), xy(3, 1), xy(2, 2));
-		addSolution("sadi", xy(3, 0), xy(3, 1), xy(2, 2), xy(3, 3));
-		addSolution("sag", xy(3, 0), xy(3, 1), xy(3, 2));
-		addSolution("sago", xy(3, 0), xy(3, 1), xy(3, 2), xy(2, 1));
-		addSolution("nod", xy(1, 1), xy(2, 1), xy(2, 2));
-		addSolution("nodi", xy(1, 1), xy(2, 1), xy(2, 2), xy(3, 3));
-		addSolution("nog", xy(1, 1), xy(2, 1), xy(3, 2));
-		addSolution("ado", xy(3, 1), xy(2, 2), xy(2, 1));
-		addSolution("ago", xy(3, 1), xy(3, 2), xy(2, 1));
-		addSolution("agon", xy(3, 1), xy(3, 2), xy(2, 1), xy(1, 1));
-		addSolution("dos", xy(2, 2), xy(2, 1), xy(3, 0));
-		addSolution("don", xy(2, 2), xy(2, 1), xy(1, 1));
-		addSolution("dog", xy(2, 2), xy(2, 1), xy(3, 2));
-		addSolution("dag", xy(2, 2), xy(3, 1), xy(3, 2));
-		addSolution("dago", xy(2, 2), xy(3, 1), xy(3, 2), xy(2, 1));
-		addSolution("dagos", xy(2, 2), xy(3, 1), xy(3, 2), xy(2, 1), xy(3, 0));
-		addSolution("dug", xy(2, 2), xy(2, 3), xy(3, 2));
-		addSolution("dig", xy(2, 2), xy(3, 3), xy(3, 2));
-		addSolution("goo", xy(3, 2), xy(2, 1), xy(2, 0));
-		addSolution("goon", xy(3, 2), xy(2, 1), xy(2, 0), xy(1, 1));
-		addSolution("gos", xy(3, 2), xy(2, 1), xy(3, 0));
-		addSolution("goa", xy(3, 2), xy(2, 1), xy(3, 1));
-		addSolution("goad", xy(3, 2), xy(2, 1), xy(3, 1), xy(2, 2));
-		addSolution("gov", xy(3, 2), xy(2, 1), xy(1, 2));
-		addSolution("god", xy(3, 2), xy(2, 1), xy(2, 2));
-		addSolution("gas", xy(3, 2), xy(3, 1), xy(3, 0));
-		addSolution("gad", xy(3, 2), xy(3, 1), xy(2, 2));
-		addSolution("guv", xy(3, 2), xy(2, 3), xy(1, 2));
-		addSolution("guidon", xy(3, 2), xy(2, 3), xy(3, 3), xy(2, 2), xy(2, 1), xy(1, 1));
-		addSolution("gid", xy(3, 2), xy(3, 3), xy(2, 2));
-		addSolution("pud", xy(1, 3), xy(2, 3), xy(2, 2));
-		addSolution("pug", xy(1, 3), xy(2, 3), xy(3, 2));
-		addSolution("udo", xy(2, 3), xy(2, 2), xy(2, 1));
-		addSolution("updo", xy(2, 3), xy(1, 3), xy(2, 2), xy(2, 1));
+		//addSolution("QOD", xy(1, 0), xy(2, 1), xy(2, 2));
+		addSolution("ONO", xy(2, 1), xy(1, 1), xy(2, 0));
+		addSolution("SON", xy(3, 0), xy(2, 1), xy(1, 1));
+		addSolution("SOON", xy(3, 0), xy(2, 1), xy(2, 0), xy(1, 1));
+		addSolution("SOD", xy(3, 0), xy(2, 1), xy(2, 2));
+		addSolution("SODA", xy(3, 0), xy(2, 1), xy(2, 2), xy(3, 1));
+		addSolution("SAD", xy(3, 0), xy(3, 1), xy(2, 2));
+		addSolution("SADI", xy(3, 0), xy(3, 1), xy(2, 2), xy(3, 3));
+		addSolution("SAG", xy(3, 0), xy(3, 1), xy(3, 2));
+		addSolution("SAGO", xy(3, 0), xy(3, 1), xy(3, 2), xy(2, 1));
+		addSolution("NOD", xy(1, 1), xy(2, 1), xy(2, 2));
+		addSolution("NODI", xy(1, 1), xy(2, 1), xy(2, 2), xy(3, 3));
+		addSolution("NOG", xy(1, 1), xy(2, 1), xy(3, 2));
+		addSolution("ADO", xy(3, 1), xy(2, 2), xy(2, 1));
+		addSolution("AGO", xy(3, 1), xy(3, 2), xy(2, 1));
+		addSolution("AGON", xy(3, 1), xy(3, 2), xy(2, 1), xy(1, 1));
+		addSolution("DOS", xy(2, 2), xy(2, 1), xy(3, 0));
+		addSolution("DON", xy(2, 2), xy(2, 1), xy(1, 1));
+		addSolution("DOG", xy(2, 2), xy(2, 1), xy(3, 2));
+		addSolution("DAG", xy(2, 2), xy(3, 1), xy(3, 2));
+		addSolution("DAGO", xy(2, 2), xy(3, 1), xy(3, 2), xy(2, 1));
+		addSolution("DAGOS", xy(2, 2), xy(3, 1), xy(3, 2), xy(2, 1), xy(3, 0));
+		addSolution("DUG", xy(2, 2), xy(2, 3), xy(3, 2));
+		addSolution("DIG", xy(2, 2), xy(3, 3), xy(3, 2));
+		addSolution("GOO", xy(3, 2), xy(2, 1), xy(2, 0));
+		addSolution("GOON", xy(3, 2), xy(2, 1), xy(2, 0), xy(1, 1));
+		addSolution("GOS", xy(3, 2), xy(2, 1), xy(3, 0));
+		addSolution("GOA", xy(3, 2), xy(2, 1), xy(3, 1));
+		addSolution("GOAD", xy(3, 2), xy(2, 1), xy(3, 1), xy(2, 2));
+		addSolution("GOV", xy(3, 2), xy(2, 1), xy(1, 2));
+		addSolution("GOD", xy(3, 2), xy(2, 1), xy(2, 2));
+		addSolution("GAS", xy(3, 2), xy(3, 1), xy(3, 0));
+		addSolution("GAD", xy(3, 2), xy(3, 1), xy(2, 2));
+		addSolution("GUV", xy(3, 2), xy(2, 3), xy(1, 2));
+		addSolution("GUIDON", xy(3, 2), xy(2, 3), xy(3, 3), xy(2, 2), xy(2, 1), xy(1, 1));
+		addSolution("GID", xy(3, 2), xy(3, 3), xy(2, 2));
+		addSolution("PUD", xy(1, 3), xy(2, 3), xy(2, 2));
+		addSolution("PUG", xy(1, 3), xy(2, 3), xy(3, 2));
+		addSolution("UDO", xy(2, 3), xy(2, 2), xy(2, 1));
+		addSolution("UPDO", xy(2, 3), xy(1, 3), xy(2, 2), xy(2, 1));
 
 	}
 
 	private static final String[] WORDS = new String[] {
-			"quod", "ono", "son", "soon", "sod", "soda", "sad", "sadi", "sag", "sago", "nod", "nodi",
-			"nog", "ado", "ago", "agon", "dos", "don", "dog", "dag", "dago", "dagos", "dug", "dig",
-			"goo", "goon", "gos", "goa", "goad", "gov", "god", "gas", "gad", "guv", "guidon", "gid",
-			"pud", "pug", "udo", "updo",
+			/*"QOD",*/ "ONO", "SON", "SOON", "SOD", "SODA", "SAD", "SADI", "SAG", "SAGO", "NOD", "NODI",
+			"NOG", "ADO", "AGO", "AGON", "DOS", "DON", "DOG", "DAG", "DAGO", "DAGOS", "DUG", "DIG",
+			"GOO", "GOON", "GOS", "GOA", "GOAD", "GOV", "GOD", "GAS", "GAD", "GUV", "GUIDON", "GID",
+			"PUD", "PUG", "UDO", "UPDO",
 	};
 
 	private static int xy(int x, int y) {
@@ -93,13 +93,13 @@ public class FullUsUkTrieTest extends TrieTest {
 	}
 
 	private static void addSolution(String word, Integer ...positions) {
-		SOLUTIONS.put(word, new StringTrie.StringSolution(word, positions));
+		SOLUTIONS.put(word, new Solution.Default(word, positions));
 	}
 
 	@Test
 	public void testLoadingCompressedTries() throws IOException {
-		InputStream stream = FullUsUkTrieTest.class.getClassLoader().getResourceAsStream("words.bin");
-		Trie trie = new StringTrie.Deserializer().deserialize(stream, BOARD, true, false);
+		InputStream stream = FullUsUkTrieTest.class.getClassLoader().getResourceAsStream("en_us.bin");
+		Trie trie = new StringTrie.Deserializer().deserialize(stream, BOARD);
 		assertTrieCorrect(trie);
 	}
 
@@ -142,8 +142,8 @@ public class FullUsUkTrieTest extends TrieTest {
 	@Test
 	@Ignore
 	public void testSolverPerformance() throws IOException {
-		InputStream stream = FullUsUkTrieTest.class.getClassLoader().getResourceAsStream("words.bin");
-		Trie trie = new StringTrie.Deserializer().deserialize(stream, BOARD, false, true);
+		InputStream stream = FullUsUkTrieTest.class.getClassLoader().getResourceAsStream("en_us.bin");
+		Trie trie = new StringTrie.Deserializer().deserialize(stream, BOARD);
 		assertEquals(40, trie.solver(BOARD, new WordFilter.MinLength(3)).size());
 		long startTime = System.currentTimeMillis();
 		trie.solver(BOARD, new WordFilter.MinLength(3));
@@ -157,12 +157,12 @@ public class FullUsUkTrieTest extends TrieTest {
 	}
 
 	private void testUsDictionary(Trie trie) {
-		String[] words = readDictionary("us.txt");
-		assertEquals(77517, words.length);
+		String[] words = readDictionary("en_us.txt");
+		assertEquals(74007, words.length);
 
-		addWords(trie, words, true, false);
+		addWords(trie, words);
 
-		assertTrieMatches("After adding entire US dictionary to a new Trie", trie, words, null, null);
+		assertTrieMatches("After adding entire US dictionary to a new Trie", trie, words);
 	}
 
 	@Test
@@ -171,12 +171,12 @@ public class FullUsUkTrieTest extends TrieTest {
 	}
 
 	private void testUkDictionary(Trie trie) {
-		String[] words = readDictionary("uk.txt");
-		assertEquals(77097, words.length);
+		String[] words = readDictionary("en_uk.txt");
+		assertEquals(73596, words.length);
 
-		addWords(trie, words, true, false);
+		addWords(trie, words);
 
-		assertTrieMatches("After adding entire UK dictionary to a new Trie", trie, words, null, null);
+		assertTrieMatches("After adding entire UK dictionary to a new Trie", trie, words);
 	}
 
 	static String[] readDictionary(String fileName) {

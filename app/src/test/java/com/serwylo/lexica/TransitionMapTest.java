@@ -22,30 +22,30 @@ import static org.junit.Assert.assertTrue;
 
 public class TransitionMapTest {
 
-    private static final Board BOARD = new FourByFourBoard(new String[] {
-            "b", "e", "x", "x",
-            "d", "a", "n", "x",
-            "x", "r", "k", "x",
-            "x", "x", "x", "x",
+    private static final Board BOARD = new FourByFourBoard(new Character[] {
+            'B', 'E', 'X', 'X',
+            'D', 'A', 'N', 'X',
+            'X', 'R', 'K', 'X',
+            'X', 'X', 'X', 'X',
     });
 
     // Only a subset of all possible solutions.
     private static final LinkedHashMap<String, Solution> SOLUTIONS = new LinkedHashMap<>();
 
     static {
-        // Note: Don't include "a", "an", or "be" because they are too short.
-        SOLUTIONS.put("bed",   new Solution.Default("bed",   new Integer[] { xy(0, 0), xy(1, 0), xy(0, 1) }));
-        SOLUTIONS.put("bad",   new Solution.Default("bad",   new Integer[] { xy(0, 0), xy(1, 1), xy(0, 1) }));
-        SOLUTIONS.put("ban",   new Solution.Default("ban",   new Integer[] { xy(0, 0), xy(1, 1), xy(2, 1) }));
-        SOLUTIONS.put("ran",   new Solution.Default("ran",   new Integer[] { xy(1, 2), xy(1, 1), xy(2, 1) }));
-        SOLUTIONS.put("bean",  new Solution.Default("bean",  new Integer[] { xy(0, 0), xy(1, 0), xy(1, 1), xy(2, 1) }));
-        SOLUTIONS.put("bane",  new Solution.Default("bane",  new Integer[] { xy(0, 0), xy(1, 1), xy(2, 1), xy(1, 0) }));
-        SOLUTIONS.put("barn",  new Solution.Default("barn",  new Integer[] { xy(0, 0), xy(1, 1), xy(1, 2), xy(2, 1) }));
-        SOLUTIONS.put("darn",  new Solution.Default("darn",  new Integer[] { xy(0, 1), xy(1, 1), xy(1, 2), xy(2, 1) }));
-        SOLUTIONS.put("beard", new Solution.Default("beard", new Integer[] { xy(0, 0), xy(1, 0), xy(1, 1), xy(1, 2), xy(0, 1) }));
-        SOLUTIONS.put("ear",   new Solution.Default("ear",   new Integer[] { xy(1, 0), xy(1, 1), xy(1, 2) }));
-        SOLUTIONS.put("earn",  new Solution.Default("earn",  new Integer[] { xy(1, 0), xy(1, 1), xy(1, 2), xy(2, 1) }));
-        SOLUTIONS.put("bard",  new Solution.Default("bard",  new Integer[] { xy(0, 0), xy(1, 1), xy(1, 2), xy(0, 1) }));
+        // Note: Don't include "A", "AN", or "BE" because they are too short.
+        SOLUTIONS.put("BED",   new Solution.Default("BED",   new Integer[] { xy(0, 0), xy(1, 0), xy(0, 1) }));
+        SOLUTIONS.put("BAD",   new Solution.Default("BAD",   new Integer[] { xy(0, 0), xy(1, 1), xy(0, 1) }));
+        SOLUTIONS.put("BAN",   new Solution.Default("BAN",   new Integer[] { xy(0, 0), xy(1, 1), xy(2, 1) }));
+        SOLUTIONS.put("RAN",   new Solution.Default("RAN",   new Integer[] { xy(1, 2), xy(1, 1), xy(2, 1) }));
+        SOLUTIONS.put("BEAN",  new Solution.Default("BEAN",  new Integer[] { xy(0, 0), xy(1, 0), xy(1, 1), xy(2, 1) }));
+        SOLUTIONS.put("BANE",  new Solution.Default("BANE",  new Integer[] { xy(0, 0), xy(1, 1), xy(2, 1), xy(1, 0) }));
+        SOLUTIONS.put("BARN",  new Solution.Default("BARN",  new Integer[] { xy(0, 0), xy(1, 1), xy(1, 2), xy(2, 1) }));
+        SOLUTIONS.put("DARN",  new Solution.Default("DARN",  new Integer[] { xy(0, 1), xy(1, 1), xy(1, 2), xy(2, 1) }));
+        SOLUTIONS.put("BEARD", new Solution.Default("BEARD", new Integer[] { xy(0, 0), xy(1, 0), xy(1, 1), xy(1, 2), xy(0, 1) }));
+        SOLUTIONS.put("EAR",   new Solution.Default("EAR",   new Integer[] { xy(1, 0), xy(1, 1), xy(1, 2) }));
+        SOLUTIONS.put("EARN",  new Solution.Default("EARN",  new Integer[] { xy(1, 0), xy(1, 1), xy(1, 2), xy(2, 1) }));
+        SOLUTIONS.put("BARD",  new Solution.Default("BARD",  new Integer[] { xy(0, 0), xy(1, 1), xy(1, 2), xy(0, 1) }));
     }
 
     static int xy(int x, int y) {
@@ -55,7 +55,7 @@ public class TransitionMapTest {
     @Test
     public void stringTransitionTest() throws IOException {
         byte[] serialized = serializedUsTrie(new StringTrie());
-        Trie trie = new StringTrie.Deserializer().deserialize(new ByteArrayInputStream(serialized), BOARD, true, false);
+        Trie trie = new StringTrie.Deserializer().deserialize(new ByteArrayInputStream(serialized), BOARD);
         Map<String, Solution> actualSolutions = trie.solver(BOARD, new WordFilter.MinLength(3));
         assertSolutions(SOLUTIONS, actualSolutions);
     }
@@ -89,7 +89,7 @@ public class TransitionMapTest {
     }
 
     private static byte[] serializedUsTrie(Trie trie) {
-        TrieTest.addWords(trie, FullUsUkTrieTest.readDictionary("us.txt"), true, false);
+        TrieTest.addWords(trie, FullUsUkTrieTest.readDictionary("en_us.txt"));
         return TrieTest.serialize(trie);
     }
 

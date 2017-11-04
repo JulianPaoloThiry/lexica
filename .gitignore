@@ -7,6 +7,8 @@
 build
 local.properties
 
-# Binary file, created as part of the build.
-app/src/main/res/raw/words.bin
-app/src/test/resources/words.bin
+# Files created as part of the build.
+app/src/main/res/raw/*.bin
+app/src/main/res/raw/*_stats.txt
+app/src/test/resources/*.bin
+app/src/test/resources/*_stats.txt

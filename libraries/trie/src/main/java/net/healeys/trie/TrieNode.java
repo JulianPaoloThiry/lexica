@@ -7,14 +7,12 @@ public interface TrieNode {
 
 	void writeNode(OutputStream out) throws IOException;
 
-	TrieNode addSuffix(String word, int currentPosition, boolean usWord, boolean ukWord);
+	TrieNode addSuffix(String word, int currentPosition);
 
-	boolean usWord();
-
-	boolean ukWord();
+	boolean isWord();
 
 	boolean isTail();
 
-	boolean isWord(String word, int currentPosition, boolean usWord, boolean ukWord);
+	boolean isWord(String word, int currentPosition);
 
 }

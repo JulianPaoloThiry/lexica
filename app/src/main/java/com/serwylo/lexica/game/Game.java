@@ -63,14 +63,6 @@ public class Game implements Synchronizer.Counter {
 
 	public enum GameStatus { GAME_STARTING, GAME_RUNNING, GAME_PAUSED, GAME_FINISHED }
 
-	//TODO: i18n
-	private static final int[] LETTER_POINTS = {
-		//  A, B, C, D, E, F, G, H, I, J, K, L, M
-			1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3,
-		//  N, O, P, Qu,R, S, T, U, V, W, X, Y, Z
-			1, 1, 3, 5, 1, 1, 1, 1, 4, 4, 8, 4, 10
-	};
-
 	private static final int[] WORD_POINTS = {
 		0,0,0, // 0,1,2
 		1,1,2, // 3,4,5
@@ -95,12 +87,12 @@ public class Game implements Synchronizer.Counter {
 	private Date start;
 	private final Context context;
 
-	private boolean usDict;
-	private boolean ukDict;
+	private String dictionary;
 	private int boardSize; // using an int so I can use much larger boards later
 	private int minWordLength;
 
 	private Map<String,Solution> solutions;
+	private Map<Character, Integer> letterPoints;
 
 	private AudioManager mgr;
 	private SoundPool mSoundPool;
@@ -132,6 +124,8 @@ public class Game implements Synchronizer.Counter {
 			maxTime = timeRemaining;
 			start = saver.readStart();
 
+			dictionary = saver.readDictionary();
+			getGenerator(c); //sets letterPoints
 			scoreType = saver.readScoreType();
 			String[] wordArray = saver.readWords();
 			wordList = new LinkedList<>();
@@ -163,15 +157,16 @@ public class Game implements Synchronizer.Counter {
 		context = c;
 		loadPreferences(c);
 
+		LetterChainGenerator lcg = getGenerator(c);
 		switch(boardSize) {
 			case 16:
-				setBoard(new CharProbGenerator(c.getResources().openRawResource(R.raw.letters)).generateFourByFourBoard());
+				setBoard(lcg.generateFourByFourBoard());
 			break;
 			case 25:
-				setBoard(new CharProbGenerator(c.getResources().openRawResource(R.raw.letters)).generateFiveByFiveBoard());
+				setBoard(lcg.generateFiveByFiveBoard());
 			break;
 			case 36:
-				setBoard(new CharProbGenerator(c.getResources().openRawResource(R.raw.letters)).generateSixBySixBoard());
+				setBoard(lcg.generateSixBySixBoard());
 			break;
 		}
 
@@ -180,6 +175,21 @@ public class Game implements Synchronizer.Counter {
 		score = 0;
 		wordsUsed = new LinkedHashSet<>();
 
+	}
+
+	private LetterChainGenerator getGenerator(Context c) {
+		int countId;
+		switch(dictionary) {
+			case "es": countId = R.raw.es_stats; break;
+			case "en_uk": countId = R.raw.en_uk_stats; break;
+			case "en_owl": countId = R.raw.en_owl_stats; break;
+			case "en_sow": countId = R.raw.en_sow_stats; break;
+			default: countId = R.raw.en_us_stats;
+		}
+
+		LetterChainGenerator lcg = new LetterChainGenerator(c.getResources().openRawResource(countId));
+		letterPoints = lcg.getLetterPoints();
+		return lcg;
 	}
 
 	private void initSoundPool(Context c) {
@@ -223,15 +233,7 @@ public class Game implements Synchronizer.Counter {
 		SharedPreferences prefs =
 			PreferenceManager.getDefaultSharedPreferences(c);
 
-		if(prefs.getString("dict","US").equals("UK")) {
-			// Log.d(TAG,"UK DICT");
-			usDict = false;
-			ukDict = true;
-		} else {
-			// Log.d(TAG,"US DICT");
-			ukDict = false;
-			usDict = true;
-		}
+		dictionary = prefs.getString("dict","en_us");
 
 		switch (prefs.getString("boardSize","16")) {
 			case "16":
@@ -259,16 +261,17 @@ public class Game implements Synchronizer.Counter {
 	}
 
 	public void initializeDictionary() {
-		initializeDictionary(usDict,ukDict);
-	}
-
-	private void initializeDictionary(boolean usDict, boolean ukDict) {
 		try {
-			Trie dict = new StringTrie.Deserializer().deserialize(
-					context.getResources().openRawResource(R.raw.words),
-					board,
-					usDict,
-					ukDict);
+			int dictId;
+			switch(dictionary) {
+				case "es": dictId = R.raw.es; break;
+				case "en_uk": dictId = R.raw.en_uk; break;
+				case "en_owl": dictId = R.raw.en_owl; break;
+				case "en_sow": dictId = R.raw.en_sow; break;
+				default: dictId = R.raw.en_us;
+			}
+
+			Trie dict = new StringTrie.Deserializer().deserialize(context.getResources().openRawResource(dictId), board);
 
 			solutions = dict.solver(board,new WordFilter() {
 				public boolean isWord(String w) {
@@ -289,6 +292,7 @@ public class Game implements Synchronizer.Counter {
 				board,
 				timeRemaining,
 				getMaxTimeRemaining(),
+				dictionary,
 				wordListToString(),
 				scoreType,
 				wordCount,
@@ -323,18 +327,17 @@ public class Game implements Synchronizer.Counter {
 		if (status != GameStatus.GAME_RUNNING) {
 			return;
 		}
-		String cap = word.toLowerCase();
 
-		if(isWord(cap)) {
-			if(wordsUsed.contains(cap)) {
+		if(isWord(word)) {
+			if(wordsUsed.contains(word)) {
 				// Word has been found before
 				wordList.addFirst("+" + word);
 				playSound(1);
 			} else {
                 // Word has not been found before
                 wordCount++;
-                score += getWordScore(cap);
-                wordCountsByLength.put(cap.length(), wordCountsByLength.get(cap.length()) + 1);
+                score += getWordScore(word);
+                wordCountsByLength.put(word.length(), wordCountsByLength.get(word.length()) + 1);
 				wordList.addFirst(word);
 				playSound(0);
 			}
@@ -343,27 +346,23 @@ public class Game implements Synchronizer.Counter {
 			wordList.addFirst(word);
 			playSound(2);
 		}
-		wordsUsed.add(cap);
+		wordsUsed.add(word);
 	}
 
 	public int getWordScore(String word) {
 		if (SCORE_WORDS.equals(scoreType)) {
 			return WORD_POINTS[word.length()];
 		} else {
-			word = word.toUpperCase();
 			int score = 0;
 			for (int i = 0; i < word.length(); i++) {
-				score += LETTER_POINTS[word.charAt(i) - 'A'];
-				if (word.charAt(i) == 'Q') {
-					i++;
-				}
+				score += letterPoints.get(word.charAt(i));
 			}
 			return score;
 		}
 	}
 
-	public static int letterPoints(String letter) {
-		return LETTER_POINTS[letter.charAt(0) - 'A'];
+	public Map<Character, Integer> getLetterPoints() {
+		return letterPoints;
 	}
 
 	public int getWordCount() {

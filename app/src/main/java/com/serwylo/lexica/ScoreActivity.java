@@ -82,6 +82,7 @@ public class ScoreActivity extends TabActivity {
 		bv = (BoardView) findViewById(R.id.missed_board);
 		bv.setBoard(game.getBoard());
 		bv.setScoreType(game.getScoreType());
+		bv.setLetterPoints(game.getLetterPoints());
 
 		Set<String> possible = game.getSolutions().keySet();
 
@@ -177,7 +178,7 @@ public class ScoreActivity extends TabActivity {
 		tv1.setLayoutParams(text1Lp);
 		tv1.setTextSize(16);
 		tv1.setTextColor(color);
-		tv1.setText(w.toUpperCase());
+		tv1.setText(w);
 
 		LinearLayout.LayoutParams text2Lp = new LinearLayout.LayoutParams(
 			ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -217,7 +218,7 @@ public class ScoreActivity extends TabActivity {
 	}
 
 	private void addMissedWord(ViewGroup vg, Solution solution) {
-		String w = solution.getWord().toUpperCase();
+		String w = solution.getWord();
 		int points = game.getWordScore(w);
 
 		LinearLayout ll = new LinearLayout(this);

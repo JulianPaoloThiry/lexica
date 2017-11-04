@@ -8,8 +8,6 @@
 	<string name="pref_dict">Diccionari</string>
 	<string name="pref_dict_summary">Selecciona el diccionari en ús</string>
 	<string name="pref_dict_dialog">Selecciona el diccionari</string>
-	<string name="pref_dict_us">Estats Units</string>
-	<string name="pref_dict_uk">Regne Unit</string>
 
 	<string name="pref_boardSize">Tamany del Taulell</string>
 	<string name="pref_boardSize_summary">Selecciona el tamany del taulell</string>

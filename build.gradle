@@ -1,6 +1,10 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 apply plugin: 'java'
 
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
 buildscript {
     repositories {
         jcenter()
@@ -22,23 +26,22 @@ allprojects {
 // depends on. However, I couldn't figure out how to have a gradle plugin in the same project
 // as another gradle build which depended on that plugin.
 
-task buildTrieBuilder(type: GradleBuild) {
-    buildFile = file('libraries/trie-builder/build.gradle')
-    tasks = ['build']
-}
-
-task buildTrieLib(type: GradleBuild) {
+task buildTrie(type: GradleBuild) {
     buildFile = file('libraries/trie/build.gradle')
     tasks = ['build']
 }
 
-task buildDictionaries(dependsOn: buildTrieBuilder, type: JavaExec) {
-    main = 'com.serwylo.lexica.trie.TrieBuilderApp'
-    classpath 'libraries/trie/build/libs/trie.jar', 'libraries/trie-builder/build/libs/trie-builder.jar'
+task buildDictionaries(dependsOn: buildTrie, type: JavaExec) {
+    main = 'com.serwylo.lexica.trie.util.DictionaryParser'
+    classpath 'libraries/trie/build/libs/trie.jar',
     args = [
-        file('assets/dictionaries/american.txt'),
-        file('assets/dictionaries/british.txt'),
-        file('app/src/main/res/raw/words.bin'),
-        file('app/src/test/resources/words.bin')
+        file('assets/dictionaries/en_us.txt'),
+        file('assets/dictionaries/en_uk.txt'),
+        file('assets/dictionaries/en_owl.txt'),
+        file('assets/dictionaries/en_sow.txt'),
+        file('assets/dictionaries/es.txt'),
+        '-',
+        file('app/src/main/res/raw'),
+        file('app/src/test/resources')
     ]
 }

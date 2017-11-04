@@ -21,8 +21,6 @@
     <string name="pref_dict">Wörterbuch</string>
     <string name="pref_dict_dialog">Wörterbuch auswählen</string>
     <string name="pref_dict_summary">Bitte wählen Sie ein Wörterbuch aus</string>
-    <string name="pref_dict_uk">Großbritannien</string>
-    <string name="pref_dict_us">USA</string>
     <string name="pref_sounds">Klänge angeschaltet</string>
     <string name="pref_sounds_summary">Sind Klangeffekte angeschaltet</string>
     <string name="pref_timeLimit">Zeit-Limit</string>

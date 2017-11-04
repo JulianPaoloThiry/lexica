@@ -24,14 +24,14 @@ package net.healeys.trie;
 public interface TransitionMap {
 
 	boolean canTransition(int fromX, int fromY, int toX, int toY);
-	
+
 	/**
 	 * Provides the value (letter) stored at a particular position.
 	 *
 	 * @param	position	the id of a position
 	 * @return				the value stored at that position
 	 */
-	String valueAt(int position);
+	Character valueAt(int position);
 
 	/**
 	 * Provides the number of positions available on a particular board.

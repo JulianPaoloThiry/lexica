@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string-array name="dict_choices_entries">
-		<item>@string/pref_dict_us</item>
-		<item>@string/pref_dict_uk</item>
+		<item>@string/pref_dict_en_us</item>
+		<item>@string/pref_dict_en_uk</item>
+		<item>@string/pref_dict_en_owl</item>
+		<item>@string/pref_dict_en_sow</item>
+		<item>@string/pref_dict_es</item>
 	</string-array>
 	<string-array name="dict_choices_entryvalues">
-		<item>US</item>
-		<item>UK</item>
+		<item>en_us</item>
+		<item>en_uk</item>
+		<item>en_owl</item>
+		<item>en_sow</item>
+		<item>es</item>
 	</string-array>
 
 	<string-array name="board_size_choices_entries">

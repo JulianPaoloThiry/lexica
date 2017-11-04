@@ -22,30 +22,30 @@ import android.text.TextUtils;
 import net.healeys.trie.TransitionMap;
 
 public abstract class Board implements TransitionMap {
-	private String[] board;
+	private Character[] board;
 
-	public Board(String[] b) {
+	public Board(Character[] b) {
 		board = b;
 	}
 
-	public synchronized String elementAt(int i) {
+	public synchronized Character elementAt(int i) {
 		return board[i];
 	}
 
-	public synchronized String elementAt(int x,int y) {
+	public synchronized Character elementAt(int x,int y) {
 		return board[x+getWidth()*y];
 	}
 
-	public synchronized String valueAt(int i) {
+	public synchronized Character valueAt(int i) {
 		return board[i];
 	}
 
 	public synchronized String toString() {
-		return TextUtils.join(",", board);
+		return TextUtils.join("", board);
 	}
 
 	public synchronized void rotate() {
-		String[] newbrd = new String[getSize()];
+		Character[] newbrd = new Character[getSize()];
 
 		int w = getWidth();
 

@@ -31,6 +31,11 @@ public class GameSaverTransient extends GameSaver {
 	}
 
 	@Override
+	public String readDictionary() {
+		return bundle.getString(DICTIONARY);
+	}
+
+	@Override
 	public String[] readWords() {
 		return safeSplit(bundle.getString(WORDS));
 	}
@@ -46,8 +51,8 @@ public class GameSaverTransient extends GameSaver {
 	}
 
 	@Override
-	public String[] readGameBoard() {
-		return safeSplit(bundle.getString(GAME_BOARD));
+	public Character[] readGameBoard() {
+		return stringToChars(bundle.getString(GAME_BOARD));
 	}
 
 	@Override
@@ -68,12 +73,13 @@ public class GameSaverTransient extends GameSaver {
 	}
 
 	@Override
-	public void save(Board board, int timeRemaining, int maxTimeRemaining, String wordListToString, String scoreType, int wordCount, Date start, Game.GameStatus status) {
+	public void save(Board board, int timeRemaining, int maxTimeRemaining, String dictionary, String wordListToString, String scoreType, int wordCount, Date start, Game.GameStatus status) {
 		bundle.putInt(GameSaver.BOARD_SIZE, board.getSize());
 
 		bundle.putString(GameSaver.GAME_BOARD, board.toString());
 		bundle.putInt(GameSaver.TIME_REMAINING, timeRemaining);
 		bundle.putInt(GameSaver.MAX_TIME_REMAINING, maxTimeRemaining);
+		bundle.putString(DICTIONARY, dictionary);
 		bundle.putString(GameSaver.WORDS, wordListToString);
 		bundle.putString(SCORE_TYPE, scoreType);
 		bundle.putInt(GameSaver.WORD_COUNT, wordCount);

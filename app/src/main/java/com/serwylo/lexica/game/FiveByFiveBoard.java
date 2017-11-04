@@ -22,7 +22,7 @@ public class FiveByFiveBoard extends Board {
 	private static final int SIZE = 25;
 	private static final int WIDTH = 5;
 
-	public FiveByFiveBoard(String[] b) {
+	public FiveByFiveBoard(Character[] b) {
 		super(b);
 	}
 
